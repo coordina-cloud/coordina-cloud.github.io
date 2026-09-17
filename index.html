@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>给小彤的周日计划</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grain"></div>
+<header class="hero">
+  <div class="eyebrow">TO · 小彤</div>
+  <h1>给小彤的<br><em>周日计划</em></h1>
+  <p>四种约会剧情，交给你选择。<br>我负责路线、时间和快乐，你负责打分。</p>
+  <button class="primary" onclick="document.querySelector('#plans').scrollIntoView({behavior:'smooth'})">开始选约会 ↓</button>
+</header>
+
+<main id="plans">
+<section class="intro">
+  <span>01 — CHOOSE YOUR SUNDAY</span>
+  <h2>这一次，想和我怎么过？</h2>
+  <p>每个方案都准备了完整路线、时间、预算、优缺点和备用计划。看完以后，给它一个 1–10 分吧。</p>
+</section>
+
+<div class="cards">
+  <article class="card" data-plan="city">
+    <div class="num">01</div><div class="icon">🏮</div>
+    <h3>老城散步计划</h3>
+    <p class="sub">西兴隆街 → 三里河公园 → 杨梅竹斜街</p>
+    <div class="tags"><span>Citywalk</span><span>拍照</span><span>聊天</span></div>
+    <button onclick="openPlan('city')">打开约会剧本 →</button>
+  </article>
+  <article class="card" data-plan="sunset">
+    <div class="num">02</div><div class="icon">🌅</div>
+    <h3>百望山晚霞计划</h3>
+    <p class="sub">下午进山 → 山顶看晚霞 → 夜晚下山</p>
+    <div class="tags"><span>晚霞</span><span>自然</span><span>散步</span></div>
+    <button onclick="openPlan('sunset')">打开约会剧本 →</button>
+  </article>
+  <article class="card" data-plan="movie">
+    <div class="num">03</div><div class="icon">🎬</div>
+    <h3>电影约会计划</h3>
+    <p class="sub">候选：《我想留在你身边》《坠落2：死点》→ 看完认真聊天</p>
+    <div class="tags"><span>电影</span><span>室内</span><span>轻松</span></div>
+    <button onclick="openPlan('movie')">打开约会剧本 →</button>
+  </article>
+  <article class="card" data-plan="craft">
+    <div class="num">04</div><div class="icon">🎨</div>
+    <h3>一起做点东西</h3>
+    <p class="sub">银饰 / 陶艺 / Tufting DIY → 一起完成 → 带回家</p>
+    <div class="tags"><span>DIY</span><span>纪念品</span><span>互动</span></div>
+    <button onclick="openPlan('craft')">打开约会剧本 →</button>
+  </article>
+</div>
+
+<section class="scoreboard">
+  <span>YOUR SCORES</span>
+  <h2>小彤的选择记录</h2>
+  <div id="scoreList"></div>
+  <div class="submit-row">
+    <button class="primary flex" onclick="sendReport()">提交答案 · 发送到邮箱</button>
+    <button class="ghost flex" onclick="copyReport()">复制报告</button>
+  </div>
+</section>
+</main>
+
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-bg" onclick="closePlan()"></div>
+  <div class="sheet">
+    <button class="close" onclick="closePlan()">×</button>
+    <div id="detail"></div>
+    <div class="rating">
+      <p>如果这个周日就出发，你打几分？</p>
+      <div class="stars" id="stars"></div>
+      <div id="ratingText">请选择 1–10 分</div>
+    </div>
+    <button class="primary full" onclick="saveScore()">保存我的评分</button>
+    <div class="submit-row">
+      <button class="primary flex" onclick="sendReport()">提交答案 · 发送到邮箱</button>
+      <button class="ghost flex" onclick="copyReport()">复制报告</button>
+    </div>
+  </div>
+</div>
+
+<section class="final">
+  <div class="eyebrow">A LITTLE NOTE</div>
+  <h2>其实去哪儿都可以。</h2>
+  <p>我只是想把一个普通的周日，认真地留给我们。</p>
+  <div class="heart">♡</div>
+</section>
+<footer>Made for 小彤 · Sunday Date Plan</footer>
+<script src="script.js"></script>
+</body>
+</html>

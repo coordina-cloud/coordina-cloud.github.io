@@ -1,5 +1,6 @@
-// ========== 收件邮箱：小彤提交的答案会发到这个邮箱 ==========
-const LX_EMAIL="2301727856@qq.com";
+// ========== Web3Forms 密钥（自动提交反馈用） ==========
+const WEB3FORMS_ACCESS_KEY="98140cae-8ce8-4d32-8d22-f69fef99fabd";
+let submitting=false;
 
 const plans={
 city:{title:"老城散步计划",kicker:"01 · CITYWALK",sub:"西兴隆街 → 三里河公园 → 杨梅竹斜街",time:"约 14:00 — 20:30",budget:"¥100–220 / 两人",tip:"参考前些天发过的那条路线就行——是同一个。",route:[
@@ -103,27 +104,45 @@ function buildReport(){
  lines.push("—— 由「给小彤的周日计划」自动生成");
  return lines.join("\n");
 }
-function sendReport(){
+async function submitReport(){
+ if(submitting){alert("正在提交中，请稍等一会儿");return;}
  const report=buildReport();
  if(!report){alert("小彤还没有评分哦，先去给方案打个分吧");return;}
+ if(!WEB3FORMS_ACCESS_KEY||WEB3FORMS_ACCESS_KEY.length<10){alert("还没配置 Web3Forms 密钥：请检查 script.js 顶部的 WEB3FORMS_ACCESS_KEY");return;}
  const d=new Date();
  const dateStr=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
- const subject="小彤的周日计划反馈 "+dateStr;
- location.href="mailto:"+LX_EMAIL+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(report);
+ submitting=true;
+ try{
+  const res=await fetch("https://api.web3forms.com/submit",{
+   method:"POST",
+   headers:{"Content-Type":"application/json","Accept":"application/json"},
+   body:JSON.stringify({
+    access_key:WEB3FORMS_ACCESS_KEY,
+    subject:"小彤的周日计划反馈 "+dateStr,
+    from_name:"给小彤的周日计划",
+    message:report,
+    botcheck:""
+   })
+  });
+  const data=await res.json();
+  if(data.success){alert("提交成功！lx 的邮箱已经收到啦");}
+  else{alert("提交失败："+(data.message||"请稍后重试，或点「导出我的反馈」把文件发给他"));}
+ }catch(e){
+  alert("网络好像不太顺，提交没成功。可以点「导出我的反馈」，把下载的文件发给他");
+ }
+ submitting=false;
 }
-function copyReport(){
+function exportReport(){
  const report=buildReport();
  if(!report){alert("小彤还没有评分哦，先去给方案打个分吧");return;}
- if(navigator.clipboard&&navigator.clipboard.writeText){
-  navigator.clipboard.writeText(report).then(()=>alert("报告已复制，可以粘贴到微信/短信发给 lx")).catch(()=>legacyCopy(report));
- }else{legacyCopy(report);}
-}
-function legacyCopy(text){
- const ta=document.createElement("textarea");
- ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
- document.body.appendChild(ta);ta.select();
- try{document.execCommand("copy");alert("报告已复制，可以粘贴到微信/短信发给 lx");}
- catch(e){prompt("复制失败，请手动复制：",text);}
- document.body.removeChild(ta);
+ const blob=new Blob(["\ufeff"+report],{type:"text/plain;charset=utf-8"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="小彤_周日计划反馈.txt";
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 renderScores();
